@@ -1,0 +1,144 @@
+# Starter pipeline for WLT_MOBILE Android dev Release 
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - feature/send-money-payee-new
+
+stages:
+  - stage: AndroidStage
+    pool:
+      vmImage: 'ubuntu-latest'
+    dependsOn: [ ]
+    displayName: Android
+    jobs:
+      - job: AndroidJob
+        displayName: Android
+        steps:
+
+          - task: FlutterInstall@0
+            displayName: "Install Flutter SDK"
+            inputs:
+              mode: 'auto'
+              channel: 'stable'
+              version: 'custom'
+              customVersion: '3.7.12'
+
+          - task: FlutterCommand@0
+            displayName: "Run Flutter diagnostics"
+            inputs:
+              projectDirectory: '.'
+              arguments: 'doctor -v'
+
+          - task: FlutterBuild@0
+            displayName: "Build application"
+            inputs:
+              target: 'apk'
+              projectDirectory: '$(Build.SourcesDirectory)'
+              buildFlavour: 'dev'
+              entryPoint: 'lib/helpers/entry_points/main_dev.dart'
+              extraArgs: '--no-sound-null-safety'
+
+          # - task: AndroidSigning@3
+          #   displayName: "Signing and aligning APK file(s) **/*.apk"
+          #   inputs:
+          #    apkFiles: "**/*.apk"
+          #    apksign: true
+          #    apksignerKeystoreFile: centenary_key.keystore
+          #    apksignerKeystorePassword: t#t1Fux3G
+          #    apksignerKeystoreAlias: Centenary_upload
+          #    apksignerKeyPassword: C2xu1Fc@e
+          #   #  apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/centdev.release.apk
+          #   #  zipalign: true
+
+          - task: CopyFiles@2
+            displayName: "Copy app to staging directory"
+            inputs:
+              SourceFolder: '$(agent.builddirectory)'
+              Contents: '**/*.apk'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+              flattenFolders: true
+              preserveTimestamp: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish AAB file"
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'APK'
+              publishLocation: 'Container'
+
+          # - task: Bash@3
+          #   displayName: "Upload to firebase app distribution"
+          #   inputs:
+          #     targetType: "inline"
+          #     script: |
+          #       npm i -g firebase-tools
+          #       ls -la $(androidReleaseDir)
+          #       firebase appdistribution:distribute "/home/vsts/work/1/a" \
+          #         --app 1:512552729890:android:78d2c424b4f6e4719e397b \
+          #         --release-notes "From Azure Devops" \
+          #         --groups "beta-testers" \
+          #         --token "$(firebasetoken)"
+                
+                # - stage: iOSStage
+                #   pool: 
+                #     vmImage: 'macos-latest'
+                #   dependsOn: []
+                #   displayName: iOS
+                #   jobs:
+                
+                #   # - job: iOSJob
+                #   displayName: iOS
+                #   steps: 
+
+              #   # replace "iosKey" and "yourPwd" with your secure file name and password
+              #   - task: InstallAppleCertificate@2
+              #     displayName: Install certificate
+              #     inputs:
+              #       certSecureFile: 'iosKey'
+              #       certPwd: 'yourPwd'
+              #       keychain: 'temp'
+
+              #   # replace "ios_Profile.mobileprovision" with your secure file name
+              #   - task: InstallAppleProvisioningProfile@1
+              #     displayName: Install provisioning file
+              #     inputs:
+              #       provisioningProfileLocation: 'secureFiles'
+              #       provProfileSecureFile: 'ios_Profile.mobileprovision'
+
+      #   - task: FlutterInstall@0
+      #     displayName: "Install Flutter SDK"
+      #     inputs:
+      #       mode: 'auto'
+      #       channel: 'stable'
+      #       version: 'latest'
+
+      #   - task: FlutterCommand@0
+      #     displayName: "Run Flutter diagnostics"
+      #     inputs:
+      #       projectDirectory: '.'
+      #       arguments: 'doctor -v'
+
+      #   # adjust path to the *.plist file
+      #   - task: FlutterBuild@0
+      #     displayName: "Build application"
+      #     inputs:
+      #       target: ipa
+      #       projectDirectory: '$(Build.SourcesDirectory)'
+      #       exportOptionsPlist: 'ios/exportOptions.plist'
+
+
+    #   - task: CopyFiles@2
+    #     displayName: "Copy app to staging directory"
+    #     inputs:
+    #       sourceFolder: '$(Agent.BuildDirectory)'
+    #       contents: '**/ipa/*.ipa'
+    #       targetFolder: '$(Build.StagingDirectory)'
+    #       flattenFolders: true
+
+    #   - task: PublishBuildArtifacts@1
+    #     displayName: "Publish IPA file"
+    #     inputs:
+    #       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #       ArtifactName: 'IPA'
+    #       publishLocation: 'Container'
