@@ -45,9 +45,9 @@ stages:
           #    apkFiles: "**/*.apk"
           #    apksign: true
           #    apksignerKeystoreFile: centenary_key.keystore
-          #    apksignerKeystorePassword: t#t1Fux3G
+          #    apksignerKeystorePassword: xxxxx
           #    apksignerKeystoreAlias: Centenary_upload
-          #    apksignerKeyPassword: C2xu1Fc@e
+          #    apksignerKeyPassword: xxxxx
           #   #  apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/centdev.release.apk
           #   #  zipalign: true
 
@@ -75,7 +75,7 @@ stages:
           #       npm i -g firebase-tools
           #       ls -la $(androidReleaseDir)
           #       firebase appdistribution:distribute "/home/vsts/work/1/a" \
-          #         --app 1:512552729890:android:78d2c424b4f6e4719e397b \
+          #         --app 1:5xxxxxxxx90:android:7xxxxxxxxxx719e397b \
           #         --release-notes "From Azure Devops" \
           #         --groups "beta-testers" \
           #         --token "$(firebasetoken)"
