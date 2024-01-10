@@ -71,10 +71,10 @@ stages:
                     echo  "pom: $tagversion"
         - task: Docker@2
           inputs:
-            containerRegistry: 'hitachidps.azurecr'
+            containerRegistry: 'domain.azurecr'
             repository: 'banking-backoffice'
             command: 'buildAndPush'
-            Dockerfile: 'ibank/backoffice/Dockerfile'
+            Dockerfile: 'backoffice/Dockerfile'
             tags: '$(tagversion)'
     
 # Copy and Publish Build Artifacts v1
@@ -85,6 +85,6 @@ stages:
             artifactName: icard
         - task: DownloadPipelineArtifact@2
           inputs:
-            artifact: icard
+            artifact: ipackage
             patterns: '**/*.war'
             path: $(Build.SourcesDirectory)/war
