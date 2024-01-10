@@ -18,11 +18,11 @@ stages:
     steps:
         - task: MavenAuthenticate@0
           inputs:
-                artifactsFeeds: 'dps-lk'
+                artifactsFeeds: 'pnm-lk'
                 mavenServiceConnections: 'dps.snapshots'
         - task: MavenAuthenticate@0
           inputs:
-                artifactsFeeds: 'dps-lk'
+                artifactsFeeds: 'pnm-lk'
                 mavenServiceConnections: 'dps.baserepo'
 
         - task: Cache@2
@@ -47,7 +47,7 @@ stages:
                 versionSpec: '14.21.1'
         - task: Maven@3
           inputs:
-                mavenPomFile: 'ibank/pom.xml'
+                mavenPomFile: 'pnmbank/pom.xml'
                 options: '-Dmaven.test.skip=true'
                 publishJUnitResults: false
                 javaHomeOption: 'JDKVersion'
@@ -72,9 +72,9 @@ stages:
         - task: Docker@2
           inputs:
             containerRegistry: 'domain.azurecr'
-            repository: 'banking-backoffice'
+            repository: 'pnmbackoffice'
             command: 'buildAndPush'
-            Dockerfile: 'backoffice/Dockerfile'
+            Dockerfile: 'pnmbackoffice/Dockerfile'
             tags: '$(tagversion)'
     
 # Copy and Publish Build Artifacts v1
@@ -82,7 +82,7 @@ stages:
         - task: PublishPipelineArtifact@1
           inputs:
             targetPath: $(System.DefaultWorkingDirectory)/war
-            artifactName: icard
+            artifactName: ipnm
         - task: DownloadPipelineArtifact@2
           inputs:
             artifact: ipackage
