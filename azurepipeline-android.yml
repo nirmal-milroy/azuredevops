@@ -3,7 +3,7 @@
 # https://aka.ms/yaml
 
 trigger:
-  - feature/send-money-payee-new
+  - feature/money-payee-new
 
 stages:
   - stage: AndroidStage
@@ -75,7 +75,7 @@ stages:
           #       npm i -g firebase-tools
           #       ls -la $(androidReleaseDir)
           #       firebase appdistribution:distribute "/home/vsts/work/1/a" \
-          #         --app 1:5xxxxxxxx90:android:7xxxxxxxxxx719e397b \
+          #         --app 1:5xxxxxxxx90:android:7xxxxxxxxxxb \
           #         --release-notes "From Azure Devops" \
           #         --groups "beta-testers" \
           #         --token "$(firebasetoken)"
